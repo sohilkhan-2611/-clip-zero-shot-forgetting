@@ -1,0 +1,27 @@
+# Phase 0: zero-shot accuracy of the untouched model, compared to the published OpenCLIP table.
+experiment: eval_zeroshot_vitb16
+phase: 0
+seed: 0
+device: auto            # auto picks cuda if available
+amp: true               # fp16 autocast on GPU only
+
+model:
+  name: ViT-B-16
+  pretrained: openai    # OPEN QUESTION: which weights do Liao et al. use? openai or laion2b_s34b_b88k
+checkpoint: null        # path to a fine-tuned checkpoint (.pt with only trained tensors), or null
+
+data:
+  root: data            # on Colab, point this at local disk (/content/data), not Drive, for speed
+  eval_sets: [flowers, eurosat, cifar10, cifar100, dtd, food101]
+  batch_size: 256
+  num_workers: 2
+  max_samples: null     # set e.g. 256 for a quick smoke run
+  split_seed: 0         # only for our own EuroSAT split; keep fixed across all runs
+  eurosat_test_fraction: 0.2
+
+reference:
+  url: https://raw.githubusercontent.com/mlfoundations/open_clip/main/docs/openclip_results.csv
+  tolerance_pp: 1.0     # "roughly matches" threshold in accuracy points; our choice, adjust if you like
+
+output:
+  results_dir: results/phase0

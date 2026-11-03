@@ -1,0 +1,39 @@
+# Phase 0: one end-to-end fine-tune on EuroSAT (last 6 visual blocks, frozen text anchors).
+# Training hyperparameters below are PLACEHOLDERS, not taken from Liao et al.
+# Replace them with Liao et al.'s recipe once you have noted it (Phase 0 checklist item).
+experiment: finetune_eurosat_vitb16
+phase: 0
+seed: 0
+device: auto
+amp: true
+
+model:
+  name: ViT-B-16
+  pretrained: openai
+
+data:
+  root: data
+  target: eurosat
+  eval_sets: [flowers, cifar10, cifar100, dtd, food101]   # held-out zero-shot sets (target is added automatically)
+  num_workers: 2
+  eval_batch_size: 256
+  max_samples: null        # training subset size for smoke runs
+  max_eval_samples: null   # eval subset size for smoke runs
+  split_seed: 0
+  eurosat_test_fraction: 0.2
+
+train:
+  train_last_k_blocks: 6
+  train_ln_post: false
+  train_proj: false
+  augment: open_clip   # open_clip train transform (random resized crop) or none
+  epochs: 10           # PLACEHOLDER
+  batch_size: 64       # PLACEHOLDER
+  lr: 1.0e-5           # PLACEHOLDER
+  weight_decay: 0.1    # PLACEHOLDER
+  warmup_steps: 50     # PLACEHOLDER
+  grad_clip: 1.0       # PLACEHOLDER
+
+output:
+  results_dir: results/phase0
+  checkpoint_dir: checkpoints   # on Colab use Drive, e.g. /content/drive/MyDrive/clip-forgetting/checkpoints

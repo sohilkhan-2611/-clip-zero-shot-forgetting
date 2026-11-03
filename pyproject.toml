@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clip-forgetting-deltas"
+version = "0.0.1"
+description = "Predicting and reducing zero-shot forgetting in CLIP fine-tuning via semantically interpretable weight directions"
+requires-python = ">=3.10"
+# torch / torchvision are not pinned: use the build that ships with Colab or the cluster.
+# open_clip and clip_benchmark are pinned to the versions the code was checked against.
+dependencies = [
+  "torch",
+  "torchvision",
+  "open_clip_torch==3.3.0",
+  "clip_benchmark==1.6.2",
+  "pyyaml",
+  "numpy",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
