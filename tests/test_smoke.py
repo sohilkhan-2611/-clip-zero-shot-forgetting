@@ -43,6 +43,8 @@ def test_evaluate_and_finetune_run(tmp_path, monkeypatch):
                          f"output.checkpoint_dir={tmp_path}/ckpt", "train.epochs=1", "train.batch_size=4",
                          "train.warmup_steps=1", "data.eval_sets=[cifar10]", "data.eval_batch_size=4"])
     assert len(out["history"]) == 1 and set(out["results"]) == {"flowers", "cifar10"}
+    assert set(out["base"]) == {"flowers", "cifar10"} and "cifar10" in out["summary"]["forgetting"]
+    assert out["results"]["flowers"]["n"] == 8  # target_eval_samples=2000 > 8 keeps all
     state = torch.load(out["checkpoint"])
     assert all(k.startswith("visual.transformer.resblocks.") for k in state)
 

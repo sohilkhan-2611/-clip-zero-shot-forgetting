@@ -94,7 +94,10 @@ def load_reference(url: str, model_name: str, pretrained: str, cache: str | Path
     except Exception as e:  # network down etc.
         print(f"[reference] could not load {url}: {e}")
         return None
-    row = next((r for r in rows if r["name"] == model_name and r["pretrained"] == pretrained), None)
+    # The table lists OpenAI weights under e.g. "ViT-B-16", while open_clip needs "ViT-B-16-quickgelu"
+    # to build them correctly, so fall back to the name without the suffix.
+    names = [model_name, model_name.removesuffix("-quickgelu")]
+    row = next((r for n in names for r in rows if r["name"] == n and r["pretrained"] == pretrained), None)
     if row is None:
         return None
     return {ours: float(row[col]) for ours, col in REFERENCE_COLUMNS.items() if row.get(col)}
@@ -133,7 +136,8 @@ def main(argv=None):
     for name in dcfg["eval_sets"]:
         ds = D.build_dataset(name, "test", dcfg["root"], preprocess_val,
                              split_seed=dcfg.get("split_seed", 0),
-                             eurosat_test_fraction=dcfg.get("eurosat_test_fraction", 0.2))
+                             eurosat_test_fraction=dcfg.get("eurosat_test_fraction", 0.2),
+                             split_mode=dcfg.get("split_mode", "permutation"))
         ds = D.subsample(ds, dcfg.get("max_samples"), cfg["seed"])
         results[name] = evaluate_dataset(model, tokenizer, ds, device, dcfg["batch_size"],
                                          dcfg["num_workers"], cfg.get("amp", True))

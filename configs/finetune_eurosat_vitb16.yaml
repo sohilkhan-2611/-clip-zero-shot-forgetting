@@ -1,38 +1,46 @@
 # Phase 0: one end-to-end fine-tune on EuroSAT (last 6 visual blocks, frozen text anchors).
-# Training hyperparameters below are PLACEHOLDERS, not taken from Liao et al.
-# Replace them with Liao et al.'s recipe once you have noted it (Phase 0 checklist item).
+# Sources: [L] = Liao et al., TMLR 2026 (arXiv 2610.34144), Sec. 3, Sec. 4 "Standard datasets", App. A.
+#          [ours] = not stated in Liao et al.; our choice, recorded so it can be reported.
 experiment: finetune_eurosat_vitb16
 phase: 0
 seed: 0
 device: auto
-amp: true
+amp: true                  # [ours] fp16 autocast on GPU
 
 model:
-  name: ViT-B-16
+  name: ViT-B-16-quickgelu # [L] OpenAI checkpoint with QuickGELU
   pretrained: openai
 
 data:
   root: data
-  target: eurosat
-  eval_sets: [flowers, cifar10, cifar100, dtd, food101]   # held-out zero-shot sets (target is added automatically)
+  target: eurosat          # [L] seed-0 permutation, 80/20 (Liao use EuroSAT with ViT-L/14 only)
+  eval_sets: [flowers, cifar10, cifar100, dtd, food101]   # [ours] held-out forgetting sets; Liao do not measure these
   num_workers: 2
   eval_batch_size: 256
-  max_samples: null        # training subset size for smoke runs
-  max_eval_samples: null   # eval subset size for smoke runs
+  target_eval_samples: 2000  # [L] "seed-0 uniform random sample of 2,000 test examples" (our RNG, so not their exact images)
+  eval_sample_seed: 0
+  max_eval_samples: null     # held-out sets: full test sets; set e.g. 256 for smoke runs
+  max_samples: null          # training subset size for smoke runs
   split_seed: 0
+  split_mode: permutation
   eurosat_test_fraction: 0.2
 
 train:
-  train_last_k_blocks: 6
-  train_ln_post: false
-  train_proj: false
-  augment: open_clip   # open_clip train transform (random resized crop) or none
-  epochs: 10           # PLACEHOLDER
-  batch_size: 64       # PLACEHOLDER
-  lr: 1.0e-5           # PLACEHOLDER
-  weight_decay: 0.1    # PLACEHOLDER
-  warmup_steps: 50     # PLACEHOLDER
-  grad_clip: 1.0       # PLACEHOLDER
+  train_last_k_blocks: 6   # [L] final six visual blocks trainable (incl. their LN1/LN2)
+  train_ln_post: false     # [L] final visual LayerNorm frozen
+  train_proj: false        # [L] visual projection frozen (text tower and logit scale frozen too)
+  epochs: 5                # [L] standard datasets use five epochs
+  batch_size: 48           # [L]
+  lr: 1.0e-5               # [L]
+  optimizer: adamw         # [ours] not stated
+  weight_decay: 0.1        # [ours] not stated (0.1 matches SAE-FT, a different setup)
+  warmup_steps: 20         # [ours] not stated (~10% of the ~210 steps)
+  schedule: cosine         # [ours] not stated
+  grad_clip: 1.0           # [ours] not stated
+  augment: none            # [ours] not stated; none = eval transform, open_clip = open_clip train transform
+
+# No ViT-B/16 EuroSAT reference in Liao et al. (their EuroSAT row is ViT-L/14).
+liao_reference: null
 
 output:
   results_dir: results/phase0

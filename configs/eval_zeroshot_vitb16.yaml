@@ -1,4 +1,5 @@
-# Phase 0: zero-shot accuracy of the untouched model, compared to the published OpenCLIP table.
+# Phase 0: zero-shot accuracy of the untouched model on FULL test sets,
+# compared to the published OpenCLIP table (which also uses full test sets).
 experiment: eval_zeroshot_vitb16
 phase: 0
 seed: 0
@@ -6,8 +7,10 @@ device: auto            # auto picks cuda if available
 amp: true               # fp16 autocast on GPU only
 
 model:
-  name: ViT-B-16
-  pretrained: openai    # OPEN QUESTION: which weights do Liao et al. use? openai or laion2b_s34b_b88k
+  # Liao et al. App. A: "OpenAI checkpoints with QuickGELU". The -quickgelu config is required;
+  # plain ViT-B-16 builds GELU and only warns about the mismatch.
+  name: ViT-B-16-quickgelu
+  pretrained: openai
 checkpoint: null        # path to a fine-tuned checkpoint (.pt with only trained tensors), or null
 
 data:
@@ -16,7 +19,8 @@ data:
   batch_size: 256
   num_workers: 2
   max_samples: null     # set e.g. 256 for a quick smoke run
-  split_seed: 0         # only for our own EuroSAT split; keep fixed across all runs
+  split_seed: 0         # Liao et al. App. A: EuroSAT "seed-0 random permutation ... 80/20"
+  split_mode: permutation
   eurosat_test_fraction: 0.2
 
 reference:
