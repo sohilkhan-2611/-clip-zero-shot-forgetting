@@ -30,6 +30,27 @@ def _fake_build(name, split, root, transform, **kw):
     return FakeDS(transform)
 
 
+def test_evaluate_keeps_finished_sets_when_interrupted(tmp_path, monkeypatch):
+    calls = {"n": 0}
+
+    def flaky_build(name, split, root, transform, **kw):
+        calls["n"] += 1
+        if name == "food101":
+            raise KeyboardInterrupt  # like stopping a slow download
+        return FakeDS(transform)
+
+    monkeypatch.setattr(D, "build_dataset", flaky_build)
+    import pytest
+    with pytest.raises(KeyboardInterrupt):
+        evaluate.main(["--config", "configs/eval_zeroshot_vitb16.yaml", "--set",
+                       f"output.results_dir={tmp_path}", "model.pretrained=null", "device=cpu",
+                       "data.num_workers=0", "amp=false", "data.batch_size=4", "reference=null",
+                       "data.eval_sets=[cifar10,dtd,food101]"])
+    (f,) = list(tmp_path.glob("*.json"))
+    saved = json.loads(f.read_text())
+    assert set(saved["results"]) == {"cifar10", "dtd"} and saved["complete"] is False
+
+
 def test_evaluate_and_finetune_run(tmp_path, monkeypatch):
     monkeypatch.setattr(D, "build_dataset", _fake_build)
     common = [f"output.results_dir={tmp_path}/results", "model.pretrained=null", "device=cpu",
@@ -38,6 +59,7 @@ def test_evaluate_and_finetune_run(tmp_path, monkeypatch):
     out = evaluate.main(["--config", "configs/eval_zeroshot_vitb16.yaml", "--set", *common,
                          "data.eval_sets=[cifar10,dtd]", "data.batch_size=4", "reference=null"])
     assert set(out["results"]) == {"cifar10", "dtd"} and out["results"]["cifar10"]["n"] == 8
+    assert out["complete"] is True
 
     out = finetune.main(["--config", "configs/finetune_flowers_vitb16.yaml", "--set", *common,
                          f"output.checkpoint_dir={tmp_path}/ckpt", "train.epochs=1", "train.batch_size=4",

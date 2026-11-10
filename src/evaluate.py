@@ -132,30 +132,42 @@ def main(argv=None):
     if cfg.get("checkpoint"):
         M.load_partial_state_dict(model, torch.load(cfg["checkpoint"], map_location="cpu"))
 
-    results = {}
+    # A subsampled (smoke) run is too noisy to judge against the published full-test-set numbers.
+    rcfg = cfg.get("reference")
+    compare = bool(rcfg) and not cfg.get("checkpoint") and dcfg.get("max_samples") is None
+    ref = (load_reference(rcfg["url"], mcfg["name"], mcfg["pretrained"],
+                          Path(dcfg["root"]) / "openclip_results.csv") if compare else None)
+
+    # One output file per run, rewritten after every dataset, so an interrupted run
+    # (e.g. a slow download) keeps every dataset that already finished.
+    path = results_path(cfg)
+    out = {"config": cfg, "meta": run_metadata(), "complete": False, "results": {}}
+    if dcfg.get("max_samples") is not None:
+        out["note"] = f"smoke run on {dcfg['max_samples']} images per set; not comparable to published numbers"
+
     for name in dcfg["eval_sets"]:
         ds = D.build_dataset(name, "test", dcfg["root"], preprocess_val,
                              split_seed=dcfg.get("split_seed", 0),
                              eurosat_test_fraction=dcfg.get("eurosat_test_fraction", 0.2),
                              split_mode=dcfg.get("split_mode", "permutation"))
         ds = D.subsample(ds, dcfg.get("max_samples"), cfg["seed"])
-        results[name] = evaluate_dataset(model, tokenizer, ds, device, dcfg["batch_size"],
-                                         dcfg["num_workers"], cfg.get("amp", True))
-        print(f"{name:10s} acc={results[name]['accuracy']:.4f} loss={results[name]['loss']:.4f} "
-              f"margin={results[name]['margin']:.3f} n={results[name]['n']}")
-
-    out = {"config": cfg, "meta": run_metadata(), "results": results}
-    rcfg = cfg.get("reference")
-    if rcfg and not cfg.get("checkpoint"):
-        ref = load_reference(rcfg["url"], mcfg["name"], mcfg["pretrained"],
-                             Path(dcfg["root"]) / "openclip_results.csv")
-        out["reference_comparison"] = compare_to_reference(results, ref, rcfg.get("tolerance_pp", 1.0))
-        out["reference_note"] = ("Published values come from open_clip docs/openclip_results.csv "
-                                 "(clip_benchmark). EuroSAT uses our own split, so compare loosely.")
-        for name, c in out["reference_comparison"].items():
+        res = evaluate_dataset(model, tokenizer, ds, device, dcfg["batch_size"],
+                               dcfg["num_workers"], cfg.get("amp", True))
+        out["results"][name] = res
+        line = (f"{name:10s} acc={res['accuracy']:.4f} loss={res['loss']:.4f} "
+                f"margin={res['margin']:.3f} n={res['n']}")
+        if compare:
+            out["reference_comparison"] = compare_to_reference(out["results"], ref, rcfg.get("tolerance_pp", 1.0))
+            out["reference_note"] = ("Published values come from open_clip docs/openclip_results.csv "
+                                     "(clip_benchmark). EuroSAT uses our own split, so compare loosely.")
+            c = out["reference_comparison"][name]
             if c["published"] is not None:
-                print(f"{name:10s} ours={c['ours']:.4f} published={c['published']:.4f} diff={c['diff_pp']:+.2f}pp")
-    path = save_json(out, results_path(cfg))
+                line += f"  published={c['published']:.4f} diff={c['diff_pp']:+.2f}pp"
+        print(line)
+        save_json(out, path)
+
+    out["complete"] = True
+    save_json(out, path)
     print(f"wrote {path}")
     return out
 
