@@ -16,12 +16,14 @@ src/
   data.py       datasets via clip_benchmark (same classnames and prompts as the published OpenCLIP table)
   evaluate.py   zero-shot accuracy, loss, correct-class margin; comparison with published values   (Phase 0)
   finetune.py   fine-tune the last k visual blocks with frozen class-text anchors                  (Phase 0)
+  components.py revert / retain VO, QK, MLP, LayerNorm updates (Liao et al. bias conventions)      (Phase 1)
+  aggregate_phase1.py  mean and std over seeds, Markdown table                                     (Phase 1)
 notebooks/    Colab runners and plotting notebooks
 results/      JSON outputs written by scripts, never edited by hand
 tests/        CPU sanity checks (random weights, no downloads)
 ```
 
-Later phases add `components.py`, `deltas.py`, `label.py`, `scores.py`, `intervene.py`, `predict.py`.
+Later phases add `deltas.py`, `label.py`, `scores.py`, `intervene.py`, `predict.py`.
 
 ## Usage
 

@@ -45,7 +45,20 @@ Environment: Colab Tesla T4, Python 3.13, torch 2.14.1, open_clip 3.3.0.
 - Forgetting on CIFAR-10, CIFAR-100, Food101, DTD is 1 pt or less; EuroSAT carries most of it. Use several seeds.
 - Open: harsher fine-tune as an extra setting? Flowers zero-shot +2.1 pts vs published? Keep EuroSAT for B/16? Augmentation?
 
-## Phase 1: Pilot (next)
+## Phase 1: Pilot (current)
+
+Question: which part of the trained blocks carries the gain, and which the forgetting?
+Setup: Flowers102 target, 3 seeds, Liao recipe, full held-out sets; groups and bias rules from Liao et al. App. A.
+
+- [x] `src/components.py`: revert / retain VO, QK, MLP, LayerNorm; resumable per-checkpoint JSON
+- [x] `src/aggregate_phase1.py`: mean ± std over seeds, Markdown table
+- [x] Tests (27 pass), including a numeric check that in_proj rows are Q, K, V
+- [x] `notebooks/01_phase1_colab_runner.ipynb`
+- [ ] Colab: fine-tune seeds 1 and 2
+- [ ] Colab: components for seeds 0, 1, 2
+- [ ] Table over seeds; decide VO-first or MLP-first (plan's decision rule)
+
+**Done when:** one table of gain and forgetting per component with seed variation shown.
 
 ## Gate
 Phases 2 to 6 start only after the professor checkpoint (after Phase 1).
