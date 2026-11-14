@@ -46,6 +46,13 @@ def train_step(model, images, targets, anchors, optimizer, scaler, device, amp: 
     return loss.item(), (logits.argmax(1) == targets).sum().item()
 
 
+def save_checkpoint(state: dict, path: Path) -> None:
+    """Write to a temporary file, then rename, so an interrupted save never leaves a half-written .pt."""
+    tmp = path.with_name(path.name + ".tmp")
+    torch.save(state, tmp)
+    tmp.replace(path)
+
+
 def build_eval_sets(dcfg: dict, transform, split_kw: dict) -> dict:
     """Fixed evaluation sets, built once so base and fine-tuned models see the exact same images.
 
@@ -141,7 +148,7 @@ def main(argv=None):
     ckpt_dir = Path(cfg["output"]["checkpoint_dir"])
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     ckpt_path = ckpt_dir / f"{cfg['experiment']}_seed{seed}.pt"
-    torch.save(M.trainable_state_dict(model), ckpt_path)
+    save_checkpoint(M.trainable_state_dict(model), ckpt_path)
     print(f"saved {ckpt_path}")
 
     tuned = evaluate_all("tuned")

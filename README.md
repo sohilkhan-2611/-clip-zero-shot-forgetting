@@ -17,6 +17,7 @@ src/
   evaluate.py   zero-shot accuracy, loss, correct-class margin; comparison with published values   (Phase 0)
   finetune.py   fine-tune the last k visual blocks with frozen class-text anchors                  (Phase 0)
   components.py revert / retain VO, QK, MLP, LayerNorm updates (Liao et al. bias conventions)      (Phase 1)
+  runner.py     Colab helpers: checkpoint checks, Drive to repo result sync, failing-fast shell runs
   aggregate_phase1.py  mean and std over seeds, Markdown table                                     (Phase 1)
 notebooks/    Colab runners and plotting notebooks
 results/      JSON outputs written by scripts, never edited by hand

@@ -140,3 +140,29 @@ def test_phase1_configs(path):
     assert d["target"] not in d["eval_sets"]          # a target is never also a held-out set
     assert len(cfg["checkpoints"]) == 3 and all(d["target"] in c for c in cfg["checkpoints"])
     assert set(cfg["conditions"]) <= set(C.CONDITIONS)
+
+
+def test_components_resume_only_runs_missing_conditions(tmp_path, monkeypatch, states):
+    """A file with some finished conditions (e.g. from an interrupted run) is continued, not redone."""
+    from src import data as D
+    from tests.test_smoke import FakeDS
+
+    monkeypatch.setattr(D, "build_dataset", lambda name, split, root, transform, **kw: FakeDS(transform))
+    _, pre, _ = states
+    ck = tmp_path / "finetune_flowers_vitb16_seed1.pt"
+    torch.save({k: v + 0.01 for k, v in pre.items()}, ck)
+    base = ["--config", "configs/phase1_components_flowers.yaml", "--set", "model.pretrained=null", "device=cpu",
+            "amp=false", "train_last_k_blocks=2", f"checkpoints=[{ck}]", "data.num_workers=0",
+            "data.eval_batch_size=4", "data.eval_sets=[cifar10]", f"output.results_dir={tmp_path}/res"]
+    C.main(base + ["conditions=[revert_mlp]"])           # first session: pre, ft, revert_mlp
+    (f,) = list((tmp_path / "res").glob("*.json"))
+    first = json.loads(f.read_text())["results"]
+
+    calls = []
+    real = C.evaluate_sets
+    monkeypatch.setattr(C, "evaluate_sets", lambda *a, **k: calls.append(1) or real(*a, **k))
+    C.main(base + ["conditions=[revert_mlp,retain_mlp]"])  # second session adds one condition
+    assert len(calls) == 1                                   # only retain_mlp was evaluated
+    d = json.loads(f.read_text())
+    assert d["complete"] and set(d["results"]) == {"pre", "ft", "revert_mlp", "retain_mlp"}
+    assert all(d["results"][c] == first[c] for c in first)  # finished conditions untouched

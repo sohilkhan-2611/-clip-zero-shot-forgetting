@@ -53,8 +53,8 @@ Setup, as in the plan: two targets, Flowers102 and EuroSAT, fine-tuned separatel
 - [x] `src/components.py`: revert / retain VO, QK, MLP, LayerNorm; resumable per-checkpoint JSON
 - [x] `src/aggregate_phase1.py`: mean ± std over seeds, Markdown table
 - [x] Tests (27 pass), including a numeric check that in_proj rows are Q, K, V
-- [x] `notebooks/01_phase1_colab_runner.ipynb`
-- [ ] Colab A, Flowers102: fine-tune seeds 1 and 2 (seed 0 from Phase 0); components for seeds 0, 1, 2; table
+- [x] `notebooks/01_phase1_colab_runner.ipynb`: results written straight to Drive, fine-tunes skipped when a valid checkpoint exists, components resume from Drive, push after every step (`src/runner.py`)
+- [ ] Colab A, Flowers102: fine-tune seeds 1 and 2 (seed 0 from Phase 0; seed 1 checkpoint exists in Drive, its fine-tune JSON was lost before push and its numbers come back via the components `ft` condition); components for seeds 0, 1, 2; table
 - [ ] Colab B, EuroSAT: fine-tune seeds 0, 1, 2; components for seeds 0, 1, 2; table
 - [ ] Compare both tables; decide VO-first or MLP-first (plan's decision rule)
 
