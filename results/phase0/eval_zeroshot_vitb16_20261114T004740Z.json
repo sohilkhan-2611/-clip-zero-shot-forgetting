@@ -1,0 +1,140 @@
+{
+  "config": {
+    "experiment": "eval_zeroshot_vitb16",
+    "phase": 0,
+    "seed": 0,
+    "device": "auto",
+    "amp": true,
+    "model": {
+      "name": "ViT-B-16-quickgelu",
+      "pretrained": "openai"
+    },
+    "checkpoint": null,
+    "data": {
+      "root": "/content/data",
+      "eval_sets": [
+        "flowers",
+        "eurosat",
+        "cifar10",
+        "cifar100",
+        "dtd",
+        "food101"
+      ],
+      "batch_size": 256,
+      "num_workers": 2,
+      "max_samples": null,
+      "split_seed": 0,
+      "split_mode": "permutation",
+      "eurosat_test_fraction": 0.2
+    },
+    "reference": {
+      "url": "https://raw.githubusercontent.com/mlfoundations/open_clip/main/docs/openclip_results.csv",
+      "tolerance_pp": 1.0
+    },
+    "output": {
+      "results_dir": "results/phase0"
+    },
+    "_config_path": "configs/eval_zeroshot_vitb16.yaml"
+  },
+  "meta": {
+    "timestamp": "2026-11-14T00:47:40+00:00",
+    "git_commit": "254be21",
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "open_clip": "3.3.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4",
+    "host": "6b0605367a53",
+    "clip_benchmark": "1.6.2"
+  },
+  "complete": true,
+  "results": {
+    "flowers": {
+      "accuracy": 0.7114977836608887,
+      "loss": 1.2333863973617554,
+      "margin": 1.3331283330917358,
+      "n": 6149,
+      "num_classes": 102,
+      "num_templates": 1
+    },
+    "eurosat": {
+      "accuracy": 0.5429629683494568,
+      "loss": 1.3448920249938965,
+      "margin": 0.2107146978378296,
+      "n": 5400,
+      "num_classes": 10,
+      "num_templates": 3
+    },
+    "cifar10": {
+      "accuracy": 0.9079999923706055,
+      "loss": 0.31280767917633057,
+      "margin": 3.2968156337738037,
+      "n": 10000,
+      "num_classes": 10,
+      "num_templates": 18
+    },
+    "cifar100": {
+      "accuracy": 0.6694999933242798,
+      "loss": 1.3024427890777588,
+      "margin": 1.2202805280685425,
+      "n": 10000,
+      "num_classes": 100,
+      "num_templates": 18
+    },
+    "dtd": {
+      "accuracy": 0.4478723406791687,
+      "loss": 2.016918897628784,
+      "margin": -0.003615359077230096,
+      "n": 1880,
+      "num_classes": 47,
+      "num_templates": 8
+    },
+    "food101": {
+      "accuracy": 0.8872079253196716,
+      "loss": 0.38791683316230774,
+      "margin": 3.5507893562316895,
+      "n": 25250,
+      "num_classes": 101,
+      "num_templates": 1
+    }
+  },
+  "reference_comparison": {
+    "flowers": {
+      "ours": 0.7114977836608887,
+      "published": 0.6907,
+      "diff_pp": 2.079778366088869,
+      "within_tolerance": false
+    },
+    "eurosat": {
+      "ours": 0.5429629683494568,
+      "published": 0.5594,
+      "diff_pp": -1.6437031650543221,
+      "within_tolerance": false
+    },
+    "cifar10": {
+      "ours": 0.9079999923706055,
+      "published": 0.9077,
+      "diff_pp": 0.029999237060551742,
+      "within_tolerance": true
+    },
+    "cifar100": {
+      "ours": 0.6694999933242798,
+      "published": 0.6695,
+      "diff_pp": -6.675720198856538e-07,
+      "within_tolerance": true
+    },
+    "dtd": {
+      "ours": 0.4478723406791687,
+      "published": 0.4495,
+      "diff_pp": -0.16276593208313095,
+      "within_tolerance": true
+    },
+    "food101": {
+      "ours": 0.8872079253196716,
+      "published": 0.8872,
+      "diff_pp": 0.0007925319671642228,
+      "within_tolerance": true
+    }
+  },
+  "reference_note": "Published values come from open_clip docs/openclip_results.csv (clip_benchmark). EuroSAT uses our own split, so compare loosely."
+}
