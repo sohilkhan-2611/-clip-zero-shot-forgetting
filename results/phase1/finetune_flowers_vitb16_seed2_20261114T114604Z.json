@@ -1,0 +1,295 @@
+{
+  "config": {
+    "experiment": "finetune_flowers_vitb16",
+    "phase": 0,
+    "seed": 2,
+    "device": "auto",
+    "amp": true,
+    "model": {
+      "name": "ViT-B-16-quickgelu",
+      "pretrained": "openai"
+    },
+    "data": {
+      "root": "/content/data",
+      "target": "flowers",
+      "eval_sets": [
+        "eurosat",
+        "cifar10",
+        "cifar100",
+        "dtd",
+        "food101"
+      ],
+      "num_workers": 2,
+      "eval_batch_size": 256,
+      "target_eval_samples": 2000,
+      "eval_sample_seed": 0,
+      "max_eval_samples": null,
+      "max_samples": null,
+      "split_seed": 0,
+      "split_mode": "permutation",
+      "eurosat_test_fraction": 0.2
+    },
+    "train": {
+      "train_last_k_blocks": 6,
+      "train_ln_post": false,
+      "train_proj": false,
+      "epochs": 5,
+      "batch_size": 48,
+      "lr": 1e-05,
+      "optimizer": "adamw",
+      "weight_decay": 0.1,
+      "warmup_steps": 20,
+      "schedule": "cosine",
+      "grad_clip": 1.0,
+      "augment": "none"
+    },
+    "liao_reference": {
+      "base": 0.697,
+      "full": 0.9735,
+      "source": "Liao et al. 2026, Table 1"
+    },
+    "output": {
+      "results_dir": "/content/drive/MyDrive/clip-forgetting/results/phase1",
+      "checkpoint_dir": "/content/drive/MyDrive/clip-forgetting/checkpoints"
+    },
+    "_config_path": "configs/finetune_flowers_vitb16.yaml"
+  },
+  "meta": {
+    "timestamp": "2026-11-14T11:46:04+00:00",
+    "git_commit": "07beb75",
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "open_clip": "3.3.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4",
+    "host": "47af8238e710",
+    "clip_benchmark": "1.6.2"
+  },
+  "trainable_tensors": [
+    "visual.transformer.resblocks.6.ln_1.weight",
+    "visual.transformer.resblocks.6.ln_1.bias",
+    "visual.transformer.resblocks.6.attn.in_proj_weight",
+    "visual.transformer.resblocks.6.attn.in_proj_bias",
+    "visual.transformer.resblocks.6.attn.out_proj.weight",
+    "visual.transformer.resblocks.6.attn.out_proj.bias",
+    "visual.transformer.resblocks.6.ln_2.weight",
+    "visual.transformer.resblocks.6.ln_2.bias",
+    "visual.transformer.resblocks.6.mlp.c_fc.weight",
+    "visual.transformer.resblocks.6.mlp.c_fc.bias",
+    "visual.transformer.resblocks.6.mlp.c_proj.weight",
+    "visual.transformer.resblocks.6.mlp.c_proj.bias",
+    "visual.transformer.resblocks.7.ln_1.weight",
+    "visual.transformer.resblocks.7.ln_1.bias",
+    "visual.transformer.resblocks.7.attn.in_proj_weight",
+    "visual.transformer.resblocks.7.attn.in_proj_bias",
+    "visual.transformer.resblocks.7.attn.out_proj.weight",
+    "visual.transformer.resblocks.7.attn.out_proj.bias",
+    "visual.transformer.resblocks.7.ln_2.weight",
+    "visual.transformer.resblocks.7.ln_2.bias",
+    "visual.transformer.resblocks.7.mlp.c_fc.weight",
+    "visual.transformer.resblocks.7.mlp.c_fc.bias",
+    "visual.transformer.resblocks.7.mlp.c_proj.weight",
+    "visual.transformer.resblocks.7.mlp.c_proj.bias",
+    "visual.transformer.resblocks.8.ln_1.weight",
+    "visual.transformer.resblocks.8.ln_1.bias",
+    "visual.transformer.resblocks.8.attn.in_proj_weight",
+    "visual.transformer.resblocks.8.attn.in_proj_bias",
+    "visual.transformer.resblocks.8.attn.out_proj.weight",
+    "visual.transformer.resblocks.8.attn.out_proj.bias",
+    "visual.transformer.resblocks.8.ln_2.weight",
+    "visual.transformer.resblocks.8.ln_2.bias",
+    "visual.transformer.resblocks.8.mlp.c_fc.weight",
+    "visual.transformer.resblocks.8.mlp.c_fc.bias",
+    "visual.transformer.resblocks.8.mlp.c_proj.weight",
+    "visual.transformer.resblocks.8.mlp.c_proj.bias",
+    "visual.transformer.resblocks.9.ln_1.weight",
+    "visual.transformer.resblocks.9.ln_1.bias",
+    "visual.transformer.resblocks.9.attn.in_proj_weight",
+    "visual.transformer.resblocks.9.attn.in_proj_bias",
+    "visual.transformer.resblocks.9.attn.out_proj.weight",
+    "visual.transformer.resblocks.9.attn.out_proj.bias",
+    "visual.transformer.resblocks.9.ln_2.weight",
+    "visual.transformer.resblocks.9.ln_2.bias",
+    "visual.transformer.resblocks.9.mlp.c_fc.weight",
+    "visual.transformer.resblocks.9.mlp.c_fc.bias",
+    "visual.transformer.resblocks.9.mlp.c_proj.weight",
+    "visual.transformer.resblocks.9.mlp.c_proj.bias",
+    "visual.transformer.resblocks.10.ln_1.weight",
+    "visual.transformer.resblocks.10.ln_1.bias",
+    "visual.transformer.resblocks.10.attn.in_proj_weight",
+    "visual.transformer.resblocks.10.attn.in_proj_bias",
+    "visual.transformer.resblocks.10.attn.out_proj.weight",
+    "visual.transformer.resblocks.10.attn.out_proj.bias",
+    "visual.transformer.resblocks.10.ln_2.weight",
+    "visual.transformer.resblocks.10.ln_2.bias",
+    "visual.transformer.resblocks.10.mlp.c_fc.weight",
+    "visual.transformer.resblocks.10.mlp.c_fc.bias",
+    "visual.transformer.resblocks.10.mlp.c_proj.weight",
+    "visual.transformer.resblocks.10.mlp.c_proj.bias",
+    "visual.transformer.resblocks.11.ln_1.weight",
+    "visual.transformer.resblocks.11.ln_1.bias",
+    "visual.transformer.resblocks.11.attn.in_proj_weight",
+    "visual.transformer.resblocks.11.attn.in_proj_bias",
+    "visual.transformer.resblocks.11.attn.out_proj.weight",
+    "visual.transformer.resblocks.11.attn.out_proj.bias",
+    "visual.transformer.resblocks.11.ln_2.weight",
+    "visual.transformer.resblocks.11.ln_2.bias",
+    "visual.transformer.resblocks.11.mlp.c_fc.weight",
+    "visual.transformer.resblocks.11.mlp.c_fc.bias",
+    "visual.transformer.resblocks.11.mlp.c_proj.weight",
+    "visual.transformer.resblocks.11.mlp.c_proj.bias"
+  ],
+  "trainable_params": 42527232,
+  "train_size": 2040,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.8030353536208471,
+      "train_acc": 0.7966269841269841,
+      "lr": 9.672822322997305e-06
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.11963533100095533,
+      "train_acc": 0.9712301587301587,
+      "lr": 7.452117519152542e-06
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.01811026083305478,
+      "train_acc": 0.9950396825396826,
+      "lr": 4.0955973283394525e-06
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.0020449146769741283,
+      "train_acc": 1.0,
+      "lr": 1.157994445715706e-06
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.0007635869399001379,
+      "train_acc": 1.0,
+      "lr": 0.0
+    }
+  ],
+  "checkpoint": "/content/drive/MyDrive/clip-forgetting/checkpoints/finetune_flowers_vitb16_seed2.pt",
+  "target": "flowers",
+  "base": {
+    "flowers": {
+      "accuracy": 0.6924999952316284,
+      "loss": 1.2882518768310547,
+      "margin": 1.211984395980835,
+      "n": 2000,
+      "num_classes": 102,
+      "num_templates": 1
+    },
+    "eurosat": {
+      "accuracy": 0.5429629683494568,
+      "loss": 1.3448920249938965,
+      "margin": 0.2107146978378296,
+      "n": 5400,
+      "num_classes": 10,
+      "num_templates": 3
+    },
+    "cifar10": {
+      "accuracy": 0.9079999923706055,
+      "loss": 0.31280767917633057,
+      "margin": 3.2968156337738037,
+      "n": 10000,
+      "num_classes": 10,
+      "num_templates": 18
+    },
+    "cifar100": {
+      "accuracy": 0.6694999933242798,
+      "loss": 1.3024427890777588,
+      "margin": 1.2202805280685425,
+      "n": 10000,
+      "num_classes": 100,
+      "num_templates": 18
+    },
+    "dtd": {
+      "accuracy": 0.4478723406791687,
+      "loss": 2.016918897628784,
+      "margin": -0.003615359077230096,
+      "n": 1880,
+      "num_classes": 47,
+      "num_templates": 8
+    },
+    "food101": {
+      "accuracy": 0.8872079253196716,
+      "loss": 0.3879159986972809,
+      "margin": 3.550785541534424,
+      "n": 25250,
+      "num_classes": 101,
+      "num_templates": 1
+    }
+  },
+  "results": {
+    "flowers": {
+      "accuracy": 0.9735000133514404,
+      "loss": 0.12096314132213593,
+      "margin": 7.571812629699707,
+      "n": 2000,
+      "num_classes": 102,
+      "num_templates": 1
+    },
+    "eurosat": {
+      "accuracy": 0.46611112356185913,
+      "loss": 1.5519452095031738,
+      "margin": -0.12759259343147278,
+      "n": 5400,
+      "num_classes": 10,
+      "num_templates": 3
+    },
+    "cifar10": {
+      "accuracy": 0.9063000082969666,
+      "loss": 0.3108590543270111,
+      "margin": 3.734208583831787,
+      "n": 10000,
+      "num_classes": 10,
+      "num_templates": 18
+    },
+    "cifar100": {
+      "accuracy": 0.6588000059127808,
+      "loss": 1.326856255531311,
+      "margin": 1.4405171871185303,
+      "n": 10000,
+      "num_classes": 100,
+      "num_templates": 18
+    },
+    "dtd": {
+      "accuracy": 0.4452127516269684,
+      "loss": 2.140721559524536,
+      "margin": -0.06882064789533615,
+      "n": 1880,
+      "num_classes": 47,
+      "num_templates": 8
+    },
+    "food101": {
+      "accuracy": 0.8769505023956299,
+      "loss": 0.42124825716018677,
+      "margin": 4.375402450561523,
+      "n": 25250,
+      "num_classes": 101,
+      "num_templates": 1
+    }
+  },
+  "summary": {
+    "target": "flowers",
+    "gain": 0.281000018119812,
+    "forgetting": {
+      "eurosat": 0.07685184478759766,
+      "cifar10": 0.001699984073638916,
+      "cifar100": 0.010699987411499023,
+      "dtd": 0.0026595890522003174,
+      "food101": 0.010257422924041748
+    },
+    "mean_forgetting": 0.020433765649795533
+  },
+  "liao_reference": {
+    "base": 0.697,
+    "full": 0.9735,
+    "source": "Liao et al. 2026, Table 1"
+  }
+}
