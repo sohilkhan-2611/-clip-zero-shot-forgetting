@@ -130,3 +130,13 @@ def test_components_and_aggregate_run(tmp_path, monkeypatch, states):
     aggregate_phase1.main(["--inputs", str(tmp_path / "res" / "*.json"), "--out", str(out)])
     agg = json.loads(out.read_text())
     assert agg["n_seeds"] == 2 and agg["aggregate"]["ft"]["gain"]["n"] == 2
+
+
+@pytest.mark.parametrize("path", ["configs/phase1_components_flowers.yaml", "configs/phase1_components_eurosat.yaml"])
+def test_phase1_configs(path):
+    from src.utils import load_config
+    cfg = load_config(path)
+    d = cfg["data"]
+    assert d["target"] not in d["eval_sets"]          # a target is never also a held-out set
+    assert len(cfg["checkpoints"]) == 3 and all(d["target"] in c for c in cfg["checkpoints"])
+    assert set(cfg["conditions"]) <= set(C.CONDITIONS)

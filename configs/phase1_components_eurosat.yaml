@@ -1,0 +1,39 @@
+# Phase 1 pilot, second target: EuroSAT (satellite images). Liao use EuroSAT only with ViT-L/14, so no B/16 reference.
+# For each fine-tuned checkpoint (one per seed), evaluate pre, ft and 8 revert / retain conditions
+# on the target (2,000 EuroSAT test images, our seed-0 80/20 split) and the held-out zero-shot sets.
+# Groups and bias conventions: Liao et al. 2026, Sec. 3 and App. A (see src/components.py).
+experiment: components_eurosat
+phase: 1
+seed: 0
+device: auto
+amp: true
+resume: true               # skip conditions already in the per-checkpoint JSON (Colab interruptions)
+
+model:
+  name: ViT-B-16-quickgelu
+  pretrained: openai
+train_last_k_blocks: 6     # must match the fine-tune that produced the checkpoints
+
+# One checkpoint per seed, made by src.finetune with seed=0,1,2. Edit the folder for your Drive.
+checkpoints:
+  - /content/drive/MyDrive/clip-forgetting/checkpoints/finetune_eurosat_vitb16_seed0.pt
+  - /content/drive/MyDrive/clip-forgetting/checkpoints/finetune_eurosat_vitb16_seed1.pt
+  - /content/drive/MyDrive/clip-forgetting/checkpoints/finetune_eurosat_vitb16_seed2.pt
+
+conditions: [revert_vo, revert_qk, revert_mlp, revert_ln, retain_vo, retain_qk, retain_mlp, retain_ln]
+
+data:                      # same evaluation sets as Phase 0 fine-tune, so numbers line up
+  root: data
+  target: eurosat
+  eval_sets: [flowers, cifar10, cifar100, dtd, food101]
+  num_workers: 2
+  eval_batch_size: 256
+  target_eval_samples: 2000
+  eval_sample_seed: 0
+  max_eval_samples: null   # full held-out test sets; forgetting is ~1 pt on several sets, so subsampling adds noise
+  split_seed: 0
+  split_mode: permutation
+  eurosat_test_fraction: 0.2
+
+output:
+  results_dir: results/phase1
