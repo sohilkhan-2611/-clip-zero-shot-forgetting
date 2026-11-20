@@ -38,8 +38,10 @@ On Colab use `notebooks/00_phase0_colab_runner.ipynb`.
 ## Notes
 
 * Fine-tuning checkpoints store only the trained tensors (the last k visual blocks), which is all later phases need to build weight deltas.
-* EuroSAT has no official split in torchvision; we use a fixed seeded stratified split (`data.split_seed`), so its comparison with the published number is approximate.
-* Training hyperparameters in `configs/finetune_*.yaml` are placeholders until replaced with the recipe of Liao et al.
+* Fine-tuning follows Liao et al. (TMLR 2026, Sec. 4 and App. A): OpenAI ViT-B/16 with QuickGELU (`ViT-B-16-quickgelu`), final six visual blocks trainable, final visual LayerNorm, projection, text tower and logit scale frozen, lr 1e-5, batch 48, 5 epochs, Flowers102 train + val, evaluation on a seed-0 sample of 2,000 test images.
+* Settings Liao et al. do not state (optimizer, weight decay, warmup, schedule, augmentation) are marked `[ours]` in the configs.
+* EuroSAT has no official split; like Liao et al. we use a seed-0 random permutation and an 80/20 division. The RNG is ours, so the exact images differ, and the comparison with the published zero-shot number is approximate.
+* Each fine-tune evaluates the untouched model and the tuned model on the same fixed images and writes gain and forgetting to the JSON `summary`.
 
 ## Credits
 

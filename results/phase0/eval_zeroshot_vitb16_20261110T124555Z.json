@@ -1,0 +1,94 @@
+{
+  "config": {
+    "experiment": "eval_zeroshot_vitb16",
+    "phase": 0,
+    "seed": 0,
+    "device": "auto",
+    "amp": true,
+    "model": {
+      "name": "ViT-B-16-quickgelu",
+      "pretrained": "openai"
+    },
+    "checkpoint": null,
+    "data": {
+      "root": "/content/data",
+      "eval_sets": [
+        "flowers",
+        "cifar10",
+        "dtd"
+      ],
+      "batch_size": 256,
+      "num_workers": 2,
+      "max_samples": 256,
+      "split_seed": 0,
+      "split_mode": "permutation",
+      "eurosat_test_fraction": 0.2
+    },
+    "reference": {
+      "url": "https://raw.githubusercontent.com/mlfoundations/open_clip/main/docs/openclip_results.csv",
+      "tolerance_pp": 1.0
+    },
+    "output": {
+      "results_dir": "results/phase0"
+    },
+    "_config_path": "configs/eval_zeroshot_vitb16.yaml"
+  },
+  "meta": {
+    "timestamp": "2026-11-10T12:45:55+00:00",
+    "git_commit": "9c08638",
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "open_clip": "3.3.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4",
+    "host": "a2bb0c04ab9a",
+    "clip_benchmark": "1.6.2"
+  },
+  "results": {
+    "flowers": {
+      "accuracy": 0.69921875,
+      "loss": 1.3094487190246582,
+      "margin": 1.22174072265625,
+      "n": 256,
+      "num_classes": 102,
+      "num_templates": 1
+    },
+    "cifar10": {
+      "accuracy": 0.90625,
+      "loss": 0.3120119273662567,
+      "margin": 3.16455078125,
+      "n": 256,
+      "num_classes": 10,
+      "num_templates": 18
+    },
+    "dtd": {
+      "accuracy": 0.4921875,
+      "loss": 1.8058470487594604,
+      "margin": 0.197998046875,
+      "n": 256,
+      "num_classes": 47,
+      "num_templates": 8
+    }
+  },
+  "reference_comparison": {
+    "flowers": {
+      "ours": 0.69921875,
+      "published": 0.6907,
+      "diff_pp": 0.8518750000000019,
+      "within_tolerance": true
+    },
+    "cifar10": {
+      "ours": 0.90625,
+      "published": 0.9077,
+      "diff_pp": -0.14499999999999513,
+      "within_tolerance": true
+    },
+    "dtd": {
+      "ours": 0.4921875,
+      "published": 0.4495,
+      "diff_pp": 4.268749999999999,
+      "within_tolerance": false
+    }
+  },
+  "reference_note": "Published values come from open_clip docs/openclip_results.csv (clip_benchmark). EuroSAT uses our own split, so compare loosely."
+}

@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from src import data as D
 from src import model as M
 from src.evaluate import compare_to_reference, compute_metrics
-from src.finetune import cosine_with_warmup, train_step
+from src.finetune import cosine_with_warmup, summarize, train_step
 from src.utils import apply_overrides, set_seed
 
 
@@ -74,6 +74,27 @@ def test_stratified_split_disjoint_and_balanced():
     assert np.array_equal(te, te2)  # same seed, same split
 
 
+def test_permutation_split_liao_protocol():
+    tr, te = D.permutation_split(1000, 0.2, seed=0)
+    assert len(tr) == 800 and len(te) == 200
+    assert len(np.intersect1d(tr, te)) == 0 and len(np.union1d(tr, te)) == 1000
+    tr2, te2 = D.permutation_split(1000, 0.2, seed=0)
+    assert np.array_equal(te, te2)
+    _, te3 = D.permutation_split(1000, 0.2, seed=1)
+    assert not np.array_equal(te, te3)
+
+
+def test_labeled_concat_keeps_metadata():
+    class Part(torch.utils.data.Dataset):
+        classes, templates = ["a", "b"], ["a photo of a {c}."]
+        def __init__(self, n): self.n = n
+        def __len__(self): return self.n
+        def __getitem__(self, i): return torch.zeros(1), 0
+    c = D.LabeledConcat([Part(3), Part(5)])
+    assert len(c) == 8 and c.classes == ["a", "b"]
+    assert len(D.subsample(c, 4, seed=0)) == 4
+
+
 def test_subsample_keeps_metadata():
     class Toy(torch.utils.data.Dataset):
         classes, templates = ["a", "b"], ["a photo of a {c}."]
@@ -89,6 +110,22 @@ def test_structure_matches_assumptions(clip):
     model, _ = clip
     assert len(M.visual_blocks(model)) == 12
     assert model.visual.proj.shape == (768, 512)
+
+
+def test_quickgelu_config_for_openai_weights():
+    import open_clip
+    assert open_clip.get_pretrained_cfg("ViT-B-16-quickgelu", "openai").get("quick_gelu") is True
+    m = open_clip.create_model("ViT-B-16-quickgelu", pretrained=None)
+    assert type(m.visual.transformer.resblocks[0].mlp.gelu).__name__ == "QuickGELU"
+
+
+def test_freeze_keeps_block_layernorms_trainable(clip):
+    # Liao et al.: final six blocks trainable, only the FINAL visual LayerNorm (ln_post) frozen
+    model, _ = clip
+    names = M.freeze_for_finetune(model, 6)
+    assert "visual.transformer.resblocks.11.ln_1.weight" in names
+    assert "visual.transformer.resblocks.11.ln_2.weight" in names
+    assert not any(n.startswith("visual.ln_post") for n in names) and "visual.proj" not in names
 
 
 def test_text_anchors_shape_and_norm(clip):
@@ -156,3 +193,13 @@ def test_cosine_with_warmup():
     assert cosine_with_warmup(0, 10, 100) == pytest.approx(0.1)
     assert cosine_with_warmup(10, 10, 100) == pytest.approx(1.0)
     assert cosine_with_warmup(100, 10, 100) == pytest.approx(0.0, abs=1e-9)
+
+
+def test_summarize_gain_and_forgetting():
+    base = {"flowers": {"accuracy": 0.70}, "cifar10": {"accuracy": 0.90}, "dtd": {"accuracy": 0.45}}
+    tuned = {"flowers": {"accuracy": 0.97}, "cifar10": {"accuracy": 0.85}, "dtd": {"accuracy": 0.46}}
+    s = summarize(base, tuned, "flowers")
+    assert s["gain"] == pytest.approx(0.27)
+    assert s["forgetting"]["cifar10"] == pytest.approx(0.05)
+    assert s["forgetting"]["dtd"] == pytest.approx(-0.01)  # negative = improved
+    assert s["mean_forgetting"] == pytest.approx(0.02)
