@@ -1,0 +1,286 @@
+{
+  "config": {
+    "experiment": "finetune_eurosat_vitb16",
+    "phase": 0,
+    "seed": 1,
+    "device": "auto",
+    "amp": true,
+    "model": {
+      "name": "ViT-B-16-quickgelu",
+      "pretrained": "openai"
+    },
+    "data": {
+      "root": "/content/data",
+      "target": "eurosat",
+      "eval_sets": [
+        "flowers",
+        "cifar10",
+        "cifar100",
+        "dtd",
+        "food101"
+      ],
+      "num_workers": 2,
+      "eval_batch_size": 256,
+      "target_eval_samples": 2000,
+      "eval_sample_seed": 0,
+      "max_eval_samples": null,
+      "max_samples": null,
+      "split_seed": 0,
+      "split_mode": "permutation",
+      "eurosat_test_fraction": 0.2
+    },
+    "train": {
+      "train_last_k_blocks": 6,
+      "train_ln_post": false,
+      "train_proj": false,
+      "epochs": 5,
+      "batch_size": 48,
+      "lr": 1e-05,
+      "optimizer": "adamw",
+      "weight_decay": 0.1,
+      "warmup_steps": 20,
+      "schedule": "cosine",
+      "grad_clip": 1.0,
+      "augment": "none"
+    },
+    "liao_reference": null,
+    "output": {
+      "results_dir": "/content/drive/MyDrive/clip-forgetting/results/phase1",
+      "checkpoint_dir": "/content/drive/MyDrive/clip-forgetting/checkpoints"
+    },
+    "_config_path": "configs/finetune_eurosat_vitb16.yaml"
+  },
+  "meta": {
+    "timestamp": "2026-11-21T12:37:09+00:00",
+    "git_commit": "c75b00f",
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "open_clip": "3.3.0",
+    "cuda": "13.0",
+    "gpu": "Tesla T4",
+    "host": "d7717af5553f",
+    "clip_benchmark": "1.6.2"
+  },
+  "trainable_tensors": [
+    "visual.transformer.resblocks.6.ln_1.weight",
+    "visual.transformer.resblocks.6.ln_1.bias",
+    "visual.transformer.resblocks.6.attn.in_proj_weight",
+    "visual.transformer.resblocks.6.attn.in_proj_bias",
+    "visual.transformer.resblocks.6.attn.out_proj.weight",
+    "visual.transformer.resblocks.6.attn.out_proj.bias",
+    "visual.transformer.resblocks.6.ln_2.weight",
+    "visual.transformer.resblocks.6.ln_2.bias",
+    "visual.transformer.resblocks.6.mlp.c_fc.weight",
+    "visual.transformer.resblocks.6.mlp.c_fc.bias",
+    "visual.transformer.resblocks.6.mlp.c_proj.weight",
+    "visual.transformer.resblocks.6.mlp.c_proj.bias",
+    "visual.transformer.resblocks.7.ln_1.weight",
+    "visual.transformer.resblocks.7.ln_1.bias",
+    "visual.transformer.resblocks.7.attn.in_proj_weight",
+    "visual.transformer.resblocks.7.attn.in_proj_bias",
+    "visual.transformer.resblocks.7.attn.out_proj.weight",
+    "visual.transformer.resblocks.7.attn.out_proj.bias",
+    "visual.transformer.resblocks.7.ln_2.weight",
+    "visual.transformer.resblocks.7.ln_2.bias",
+    "visual.transformer.resblocks.7.mlp.c_fc.weight",
+    "visual.transformer.resblocks.7.mlp.c_fc.bias",
+    "visual.transformer.resblocks.7.mlp.c_proj.weight",
+    "visual.transformer.resblocks.7.mlp.c_proj.bias",
+    "visual.transformer.resblocks.8.ln_1.weight",
+    "visual.transformer.resblocks.8.ln_1.bias",
+    "visual.transformer.resblocks.8.attn.in_proj_weight",
+    "visual.transformer.resblocks.8.attn.in_proj_bias",
+    "visual.transformer.resblocks.8.attn.out_proj.weight",
+    "visual.transformer.resblocks.8.attn.out_proj.bias",
+    "visual.transformer.resblocks.8.ln_2.weight",
+    "visual.transformer.resblocks.8.ln_2.bias",
+    "visual.transformer.resblocks.8.mlp.c_fc.weight",
+    "visual.transformer.resblocks.8.mlp.c_fc.bias",
+    "visual.transformer.resblocks.8.mlp.c_proj.weight",
+    "visual.transformer.resblocks.8.mlp.c_proj.bias",
+    "visual.transformer.resblocks.9.ln_1.weight",
+    "visual.transformer.resblocks.9.ln_1.bias",
+    "visual.transformer.resblocks.9.attn.in_proj_weight",
+    "visual.transformer.resblocks.9.attn.in_proj_bias",
+    "visual.transformer.resblocks.9.attn.out_proj.weight",
+    "visual.transformer.resblocks.9.attn.out_proj.bias",
+    "visual.transformer.resblocks.9.ln_2.weight",
+    "visual.transformer.resblocks.9.ln_2.bias",
+    "visual.transformer.resblocks.9.mlp.c_fc.weight",
+    "visual.transformer.resblocks.9.mlp.c_fc.bias",
+    "visual.transformer.resblocks.9.mlp.c_proj.weight",
+    "visual.transformer.resblocks.9.mlp.c_proj.bias",
+    "visual.transformer.resblocks.10.ln_1.weight",
+    "visual.transformer.resblocks.10.ln_1.bias",
+    "visual.transformer.resblocks.10.attn.in_proj_weight",
+    "visual.transformer.resblocks.10.attn.in_proj_bias",
+    "visual.transformer.resblocks.10.attn.out_proj.weight",
+    "visual.transformer.resblocks.10.attn.out_proj.bias",
+    "visual.transformer.resblocks.10.ln_2.weight",
+    "visual.transformer.resblocks.10.ln_2.bias",
+    "visual.transformer.resblocks.10.mlp.c_fc.weight",
+    "visual.transformer.resblocks.10.mlp.c_fc.bias",
+    "visual.transformer.resblocks.10.mlp.c_proj.weight",
+    "visual.transformer.resblocks.10.mlp.c_proj.bias",
+    "visual.transformer.resblocks.11.ln_1.weight",
+    "visual.transformer.resblocks.11.ln_1.bias",
+    "visual.transformer.resblocks.11.attn.in_proj_weight",
+    "visual.transformer.resblocks.11.attn.in_proj_bias",
+    "visual.transformer.resblocks.11.attn.out_proj.weight",
+    "visual.transformer.resblocks.11.attn.out_proj.bias",
+    "visual.transformer.resblocks.11.ln_2.weight",
+    "visual.transformer.resblocks.11.ln_2.bias",
+    "visual.transformer.resblocks.11.mlp.c_fc.weight",
+    "visual.transformer.resblocks.11.mlp.c_fc.bias",
+    "visual.transformer.resblocks.11.mlp.c_proj.weight",
+    "visual.transformer.resblocks.11.mlp.c_proj.bias"
+  ],
+  "trainable_params": 42527232,
+  "train_size": 21600,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.14252381175627105,
+      "train_acc": 0.9555092592592592,
+      "lr": 9.110296885626315e-06
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.05812773790883107,
+      "train_acc": 0.9835648148148148,
+      "lr": 6.625250463407523e-06
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.02407661700859737,
+      "train_acc": 0.9929166666666667,
+      "lr": 3.508605422453799e-06
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.007431509535567279,
+      "train_acc": 0.9975,
+      "lr": 9.715404378515226e-07
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.002303513047077609,
+      "train_acc": 0.9993518518518518,
+      "lr": 0.0
+    }
+  ],
+  "checkpoint": "/content/drive/MyDrive/clip-forgetting/checkpoints/finetune_eurosat_vitb16_seed1.pt",
+  "target": "eurosat",
+  "base": {
+    "eurosat": {
+      "accuracy": 0.5569999814033508,
+      "loss": 1.3194202184677124,
+      "margin": 0.2581718862056732,
+      "n": 2000,
+      "num_classes": 10,
+      "num_templates": 3
+    },
+    "flowers": {
+      "accuracy": 0.7114977836608887,
+      "loss": 1.2332894802093506,
+      "margin": 1.3332198858261108,
+      "n": 6149,
+      "num_classes": 102,
+      "num_templates": 1
+    },
+    "cifar10": {
+      "accuracy": 0.9079999923706055,
+      "loss": 0.31280767917633057,
+      "margin": 3.2968156337738037,
+      "n": 10000,
+      "num_classes": 10,
+      "num_templates": 18
+    },
+    "cifar100": {
+      "accuracy": 0.6694999933242798,
+      "loss": 1.3024427890777588,
+      "margin": 1.2202805280685425,
+      "n": 10000,
+      "num_classes": 100,
+      "num_templates": 18
+    },
+    "dtd": {
+      "accuracy": 0.4478723406791687,
+      "loss": 2.016918897628784,
+      "margin": -0.003615359077230096,
+      "n": 1880,
+      "num_classes": 47,
+      "num_templates": 8
+    },
+    "food101": {
+      "accuracy": 0.8872079253196716,
+      "loss": 0.3879159986972809,
+      "margin": 3.550785541534424,
+      "n": 25250,
+      "num_classes": 101,
+      "num_templates": 1
+    }
+  },
+  "results": {
+    "eurosat": {
+      "accuracy": 0.9815000295639038,
+      "loss": 0.08364236354827881,
+      "margin": 11.720105171203613,
+      "n": 2000,
+      "num_classes": 10,
+      "num_templates": 3
+    },
+    "flowers": {
+      "accuracy": 0.6605952382087708,
+      "loss": 1.482483148574829,
+      "margin": 1.0862716436386108,
+      "n": 6149,
+      "num_classes": 102,
+      "num_templates": 1
+    },
+    "cifar10": {
+      "accuracy": 0.8557999730110168,
+      "loss": 0.46308159828186035,
+      "margin": 4.2321085929870605,
+      "n": 10000,
+      "num_classes": 10,
+      "num_templates": 18
+    },
+    "cifar100": {
+      "accuracy": 0.6270999908447266,
+      "loss": 1.5375865697860718,
+      "margin": 1.3721624612808228,
+      "n": 10000,
+      "num_classes": 100,
+      "num_templates": 18
+    },
+    "dtd": {
+      "accuracy": 0.4260638356208801,
+      "loss": 2.269055128097534,
+      "margin": -0.360912561416626,
+      "n": 1880,
+      "num_classes": 47,
+      "num_templates": 8
+    },
+    "food101": {
+      "accuracy": 0.853702962398529,
+      "loss": 0.49183350801467896,
+      "margin": 3.763880968093872,
+      "n": 25250,
+      "num_classes": 101,
+      "num_templates": 1
+    }
+  },
+  "summary": {
+    "target": "eurosat",
+    "gain": 0.424500048160553,
+    "forgetting": {
+      "flowers": 0.05090254545211792,
+      "cifar10": 0.05220001935958862,
+      "cifar100": 0.04240000247955322,
+      "dtd": 0.021808505058288574,
+      "food101": 0.03350496292114258
+    },
+    "mean_forgetting": 0.040163207054138186
+  }
+}
